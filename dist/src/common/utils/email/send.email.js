@@ -1,0 +1,31 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendEmail = void 0;
+const common_1 = require("@nestjs/common");
+const nodemailer_1 = require("nodemailer");
+const sendEmail = async (data) => {
+    if (!data.html && !data.attachments?.length && !data.text) {
+        throw new common_1.BadRequestException("Missing Email content");
+    }
+    const transporter = (0, nodemailer_1.createTransport)({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASS,
+        },
+    });
+    try {
+        const info = await transporter.sendMail({
+            ...data,
+            from: `"HEX" <${process.env.EMAIL}>`,
+        });
+        console.log("Message Sent:", info.messageId);
+        return info;
+    }
+    catch (error) {
+        console.error("EMAIL ERROR:", error);
+        throw error;
+    }
+};
+exports.sendEmail = sendEmail;
+//# sourceMappingURL=send.email.js.map
