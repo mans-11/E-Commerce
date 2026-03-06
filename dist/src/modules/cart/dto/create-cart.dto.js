@@ -22,7 +22,7 @@ __decorate([
     (0, class_validator_1.IsMongoId)(),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_transformer_1.Type)(() => mongoose_1.Types.ObjectId),
-    __metadata("design:type", mongoose_1.Types.ObjectId)
+    __metadata("design:type", Object)
 ], CreateCartDto.prototype, "product", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),

@@ -1,6 +1,6 @@
 import { ICartIteam } from "lib/cart/create-cart.interface";
-import { Types } from "mongoose";
+import { type IProduct } from "lib/product/product.interface";
 export declare class CreateCartDto implements ICartIteam {
-    product: Types.ObjectId;
+    product: IProduct;
     quantity: number;
 }

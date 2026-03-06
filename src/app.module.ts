@@ -9,6 +9,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { BrandModule } from "./modules/brand/brand.module";
 import { CartModule } from "./modules/cart/cart.module";
 import { CategoryModule } from "./modules/category/category.module";
+import { CouponModule } from "./modules/coupon/coupon.module";
+import { OrderModule } from "./modules/order/order.module";
 import { ProductsModule } from "./modules/products/products.module";
 import { UserModule } from "./modules/user/user.module";
 
@@ -32,6 +34,8 @@ import { UserModule } from "./modules/user/user.module";
     CategoryModule,
     ProductsModule,
     CartModule,
+    CouponModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,6 +17,8 @@ const mongoose_1 = require("@nestjs/mongoose");
 const brand_module_1 = require("./modules/brand/brand.module");
 const cart_module_1 = require("./modules/cart/cart.module");
 const category_module_1 = require("./modules/category/category.module");
+const coupon_module_1 = require("./modules/coupon/coupon.module");
+const order_module_1 = require("./modules/order/order.module");
 const products_module_1 = require("./modules/products/products.module");
 const user_module_1 = require("./modules/user/user.module");
 let AppModule = class AppModule {
@@ -43,6 +45,8 @@ exports.AppModule = AppModule = __decorate([
             category_module_1.CategoryModule,
             products_module_1.ProductsModule,
             cart_module_1.CartModule,
+            coupon_module_1.CouponModule,
+            order_module_1.OrderModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

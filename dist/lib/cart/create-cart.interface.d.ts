@@ -1,8 +1,13 @@
+import { IProduct } from "lib/product/product.interface";
 import { Types } from "mongoose";
 export interface ICreateCart {
-    items: ICartIteam[];
+    items: ICreateCartItem[];
+}
+export interface ICreateCartItem {
+    product: Types.ObjectId;
+    quantity: number;
 }
 export interface ICartIteam {
-    product: Types.ObjectId;
+    product: IProduct;
     quantity: number;
 }

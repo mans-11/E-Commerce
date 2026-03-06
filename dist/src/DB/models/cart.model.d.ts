@@ -1,14 +1,16 @@
 import { ICart } from "lib/cart/catr.interface";
+import { ICartIteam } from "lib/cart/create-cart.interface";
+import { type IProduct } from "lib/product/product.interface";
 import mongoose, { HydratedDocument, Types } from "mongoose";
-export declare class CartIteam {
-    product: Types.ObjectId;
+export declare class CartIteam implements ICartIteam {
+    product: IProduct;
     quantity: number;
 }
 export declare class Cart implements ICart {
     user: Types.ObjectId;
     subTotal: number;
     totalPrice: number;
-    items: CartIteam[];
+    items: ICartIteam[];
 }
 export declare const CartSchema: mongoose.Schema<Cart, mongoose.Model<Cart, any, any, any, (mongoose.Document<unknown, any, Cart, any, mongoose.DefaultSchemaOptions> & Cart & {
     _id: Types.ObjectId;
@@ -56,7 +58,7 @@ export declare const CartSchema: mongoose.Schema<Cart, mongoose.Model<Cart, any,
     }, "id"> & {
         id: string;
     }> | undefined;
-    items?: mongoose.SchemaDefinitionProperty<CartIteam[], Cart, mongoose.Document<unknown, {}, Cart, {
+    items?: mongoose.SchemaDefinitionProperty<ICartIteam[], Cart, mongoose.Document<unknown, {}, Cart, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<Cart & {
         _id: Types.ObjectId;

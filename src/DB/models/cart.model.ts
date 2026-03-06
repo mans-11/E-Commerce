@@ -1,5 +1,7 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ICart } from "lib/cart/catr.interface";
+import { ICartIteam } from "lib/cart/create-cart.interface";
+import { type IProduct } from "lib/product/product.interface";
 import mongoose, { HydratedDocument, Types } from "mongoose";
 import { Product } from "./products.model";
 import { User } from "./user.model";
@@ -9,13 +11,13 @@ import { User } from "./user.model";
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 })
-export class CartIteam {
+export class CartIteam implements ICartIteam {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: Product.name,
     required: true,
   })
-  product: Types.ObjectId;
+  product: IProduct;
   @Prop({
     type: Number,
     required: true,
@@ -46,7 +48,7 @@ export class Cart implements ICart {
   totalPrice: number;
 
   @Prop({ type: [SchemaFactory.createForClass(CartIteam)], default: [] })
-  items: CartIteam[];
+  items: ICartIteam[];
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);

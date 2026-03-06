@@ -58,7 +58,7 @@ __decorate([
         ref: products_model_1.Product.name,
         required: true,
     }),
-    __metadata("design:type", mongoose_2.Types.ObjectId)
+    __metadata("design:type", Object)
 ], CartIteam.prototype, "product", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
