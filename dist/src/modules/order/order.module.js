@@ -5,12 +5,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderModule = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
+const auth_guard_1 = require("../../common/guard/auth.guard");
 const cart_model_1 = require("../../DB/models/cart.model");
 const order_model_1 = require("../../DB/models/order.model");
+const stripe_1 = __importDefault(require("stripe"));
 const order_controller_1 = require("./order.controller");
 const order_service_1 = require("./order.service");
 let OrderModule = class OrderModule {
@@ -26,7 +32,7 @@ exports.OrderModule = OrderModule = __decorate([
         ],
         exports: [order_service_1.OrderService],
         controllers: [order_controller_1.OrderController],
-        providers: [order_service_1.OrderService],
+        providers: [order_service_1.OrderService, auth_guard_1.AuthGuard, jwt_1.JwtService, stripe_1.default],
     })
 ], OrderModule);
 //# sourceMappingURL=order.module.js.map

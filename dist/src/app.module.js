@@ -31,6 +31,9 @@ exports.AppModule = AppModule = __decorate([
                 envFilePath: (0, node_path_1.resolve)("./config/dev.env"),
                 isGlobal: true,
             }),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
             mongoose_1.MongooseModule.forRoot(process.env.DB_URi, {
                 serverSelectionTimeoutMS: 5000,
                 onConnectionCreate(connection) {

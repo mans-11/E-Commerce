@@ -1,7 +1,10 @@
 import { Module } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
+import { AuthGuard } from "src/common/guard/auth.guard";
 import { Cart, CartSchema } from "src/DB/models/cart.model";
 import { Order, OrderSchema } from "src/DB/models/order.model";
+import Stripe from "stripe";
 import { OrderController } from "./order.controller";
 import { OrderService } from "./order.service";
 
@@ -14,6 +17,6 @@ import { OrderService } from "./order.service";
   ],
   exports: [OrderService],
   controllers: [OrderController],
-  providers: [OrderService],
+  providers: [OrderService, AuthGuard, JwtService, Stripe],
 })
 export class OrderModule {}

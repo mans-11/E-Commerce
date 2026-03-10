@@ -20,6 +20,11 @@ import { UserModule } from "./modules/user/user.module";
       envFilePath: resolve("./config/dev.env"),
       isGlobal: true,
     }),
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
     MongooseModule.forRoot(process.env.DB_URi as string, {
       serverSelectionTimeoutMS: 5000,
       onConnectionCreate(connection) {
@@ -36,6 +41,7 @@ import { UserModule } from "./modules/user/user.module";
     CartModule,
     CouponModule,
     OrderModule,
+    // PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

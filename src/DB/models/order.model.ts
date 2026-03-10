@@ -7,6 +7,7 @@ import {
 import { IOrder } from "lib/order/order-interface";
 import mongoose, { HydratedDocument, Types } from "mongoose";
 import { Cart } from "./cart.model";
+import { Coupon } from "./coupon.model";
 
 @Schema({
   timestamps: true,
@@ -32,18 +33,29 @@ export class Order implements IOrder {
   items: ICreateOrderItems[];
 
   @Prop({
-    type: String,
-    required: true,
-    enum: OrderStatus,
-  })
-  orderStatus: OrderStatus;
-
-  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: Cart.name,
   })
   cart: Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: Coupon.name,
+  })
+  coupon?: Types.ObjectId;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: {
+      values: Object.values(OrderStatus),
+      message: "Invalid Order Status",
+    },
+  })
+  orderStatus: OrderStatus;
+
   @Prop({
     type: String,
     required: true,
@@ -53,7 +65,16 @@ export class Order implements IOrder {
   @Prop({
     type: String,
     required: true,
-    enum: PaymentMethod,
+  })
+  phone: string;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: {
+      values: Object.values(PaymentMethod),
+      message: "Invalid Payment Method",
+    },
     default: function () {
       return this.paymentMethod === PaymentMethod.COD
         ? OrderStatus.PENDING
@@ -61,16 +82,36 @@ export class Order implements IOrder {
     },
   })
   paymentMethod: PaymentMethod;
+
   @Prop({
     type: Number,
     required: true,
   })
   subTotal: number;
+
   @Prop({
     type: Number,
     required: true,
   })
+  discount: number;
+
+  @Prop({
+    type: Number,
+  })
   totalPrice: number;
+
+  @Prop({
+    type: String,
+  })
+  intentId: string;
+
+  @Prop({
+    type: String,
+  })
+  refundId: string;
+
+  @Prop({ type: Date })
+  refundAt: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

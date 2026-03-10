@@ -9,6 +9,7 @@ var OrderStatus;
     OrderStatus["DELIVERED"] = "delivered";
     OrderStatus["CANCELLED"] = "cancelled";
     OrderStatus["PAID"] = "paid";
+    OrderStatus["REFUNDED"] = "refunded";
 })(OrderStatus || (exports.OrderStatus = OrderStatus = {}));
 var PaymentMethod;
 (function (PaymentMethod) {

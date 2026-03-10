@@ -47,15 +47,22 @@ const mongoose_1 = require("@nestjs/mongoose");
 const create_order_interface_1 = require("../../../lib/order/create-order.interface");
 const mongoose_2 = __importStar(require("mongoose"));
 const cart_model_1 = require("./cart.model");
+const coupon_model_1 = require("./coupon.model");
 let Order = class Order {
     user;
     items;
-    orderStatus;
     cart;
+    coupon;
+    orderStatus;
     address;
+    phone;
     paymentMethod;
     subTotal;
+    discount;
     totalPrice;
+    intentId;
+    refundId;
+    refundAt;
 };
 exports.Order = Order;
 __decorate([
@@ -79,20 +86,31 @@ __decorate([
 ], Order.prototype, "items", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
-        type: String,
-        required: true,
-        enum: create_order_interface_1.OrderStatus,
-    }),
-    __metadata("design:type", String)
-], Order.prototype, "orderStatus", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({
         type: mongoose_2.default.Schema.Types.ObjectId,
         required: true,
         ref: cart_model_1.Cart.name,
     }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Order.prototype, "cart", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: mongoose_2.default.Schema.Types.ObjectId,
+        required: true,
+        ref: coupon_model_1.Coupon.name,
+    }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Order.prototype, "coupon", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        required: true,
+        enum: {
+            values: Object.values(create_order_interface_1.OrderStatus),
+            message: "Invalid Order Status",
+        },
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "orderStatus", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: String,
@@ -104,7 +122,17 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: String,
         required: true,
-        enum: create_order_interface_1.PaymentMethod,
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "phone", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        required: true,
+        enum: {
+            values: Object.values(create_order_interface_1.PaymentMethod),
+            message: "Invalid Payment Method",
+        },
         default: function () {
             return this.paymentMethod === create_order_interface_1.PaymentMethod.COD
                 ? create_order_interface_1.OrderStatus.PENDING
@@ -126,7 +154,29 @@ __decorate([
         required: true,
     }),
     __metadata("design:type", Number)
+], Order.prototype, "discount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: Number,
+    }),
+    __metadata("design:type", Number)
 ], Order.prototype, "totalPrice", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "intentId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "refundId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], Order.prototype, "refundAt", void 0);
 exports.Order = Order = __decorate([
     (0, mongoose_1.Schema)({
         timestamps: true,

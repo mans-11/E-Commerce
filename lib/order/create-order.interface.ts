@@ -19,6 +19,7 @@ export enum OrderStatus {
   DELIVERED = "delivered",
   CANCELLED = "cancelled",
   PAID = "paid",
+  REFUNDED = "refunded",
 }
 
 export enum PaymentMethod {

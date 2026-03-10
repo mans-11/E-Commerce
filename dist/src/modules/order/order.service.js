@@ -21,13 +21,17 @@ const order_interface_1 = require("../../../lib/order/order-interface");
 const mongoose_2 = require("mongoose");
 const cart_model_1 = require("../../DB/models/cart.model");
 const order_model_1 = require("../../DB/models/order.model");
+const payment_service_1 = require("../../common/services/payment/payment.service");
 let OrderService = class OrderService {
     orderModel;
     cartModel;
+    paymentService;
     request;
-    constructor(orderModel, cartModel, request) {
+    stripe;
+    constructor(orderModel, cartModel, paymentService, request) {
         this.orderModel = orderModel;
         this.cartModel = cartModel;
+        this.paymentService = paymentService;
         this.request = request;
     }
     async create(createOrderDto) {
@@ -78,14 +82,90 @@ let OrderService = class OrderService {
         await order.save();
         return order;
     }
+    async createCheckoutSession(orderId, userId) {
+        const order = await this.orderModel
+            .findOne({
+            _id: orderId,
+            user: userId,
+            orderStatus: create_order_interface_1.OrderStatus.PENDING,
+            paymentMethod: "card",
+        })
+            .populate([{ path: "user" }, { path: "cart" }, { path: "coupon" }]);
+        if (!order)
+            throw new common_1.NotFoundException("Order Not Found");
+        const amount = order.totalPrice ?? order.subTotal ?? 0;
+        const line_items = [
+            {
+                currency: "egp",
+                product_data: {
+                    name: `Order ${order.user.firstName}`,
+                    address: `Payment for order with id ${order.address}`,
+                },
+                unit_amount: amount * 100,
+                quantity: 1,
+            },
+        ];
+        const discounts = [];
+        if (order.discount) {
+            const coupon = await this.paymentService.createCoupon({
+                duration: "once",
+                currency: "egp",
+                amount_off: order.discount * 100,
+            });
+            discounts.push({ coupon: coupon.id });
+        }
+        const session = await this.paymentService.checkoutSession({
+            customer_email: order.user.email,
+            line_items,
+            mode: "payment",
+            discounts,
+            metadata: { orderId: orderId.toString() },
+        });
+        const method = await this.paymentService.createPaymentMethod({
+            type: "card",
+            card: { token: process.env.METHOD_TOKEN },
+        });
+        if (!method)
+            throw new common_1.BadRequestException("Payment Method Creation Failed");
+        const intent = await this.paymentService.createPaymentIntent({
+            amount: order.subTotal * 100,
+            currency: "egp",
+            payment_method_types: [create_order_interface_1.PaymentMethod.CREDIT_CARD],
+        });
+        order.intentId = intent.id;
+        await order.save();
+        await this.paymentService.confirmPaymentIntent(intent.id);
+        return session;
+    }
+    async refundOrder(orderId, userId) {
+        const order = await this.orderModel.findOne({
+            _id: orderId,
+            user: userId,
+            paymentMethod: "card",
+        });
+        if (!order)
+            throw new common_1.NotFoundException("Order Not Found");
+        if (!order.intentId)
+            throw new common_1.BadRequestException("No payment intent found for this order");
+        const refund = await this.paymentService.createRefund(order.intentId);
+        await this.orderModel.findByIdAndUpdate(orderId, {
+            orderStatus: create_order_interface_1.OrderStatus.CANCELLED,
+            refundId: refund.id,
+            refundAt: new Date(),
+            $unset: { intentId: true },
+            $inc: { __v: 1 },
+        }, { new: true });
+        return order;
+    }
 };
 exports.OrderService = OrderService;
 exports.OrderService = OrderService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(order_model_1.Order.name)),
     __param(1, (0, mongoose_1.InjectModel)(cart_model_1.Cart.name)),
-    __param(2, (0, common_1.Inject)(core_1.REQUEST)),
+    __param(3, (0, common_1.Inject)(core_1.REQUEST)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model, Object])
+        mongoose_2.Model,
+        payment_service_1.PaymentService, Object])
 ], OrderService);
 //# sourceMappingURL=order.service.js.map
